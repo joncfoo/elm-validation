@@ -1,0 +1,17 @@
+{
+    "name": "elm-validation",
+    "version": "1.0.0",
+    "description": "",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "npx elm-test",
+        "demo": "elm-make src/Demo.elm --warn --output build/demo.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "elm-test": "0.18.12"
+    }
+}
