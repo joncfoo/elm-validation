@@ -1,10 +1,10 @@
-module Main exposing (main)
+module Demo exposing (..)
 
 import Cons
 import Html exposing (Html, button, div, form, h1, input, label, li, option, select, text, textarea)
 import Html.Attributes exposing (class, for, type_, value)
 import Html.Events exposing (onInput, onSubmit)
-import Validation exposing ((*>), (<$>), (<*>), (>>=))
+import Validation as V
 import Validation.Validator exposing (inList, isEmail, maxLength, minLength, notBlank, notInList)
 
 
@@ -108,40 +108,45 @@ update msg m =
 
         validUsername value =
             notBlank IsBlank value
-                *> minLength 3 IsTooShort value
-                *> maxLength 8 IsTooLong value
-                *> notInList BlacklistedUsername [ "root", "wheel" ] value
+                |> V.also (minLength 3 IsTooShort value)
+                |> V.also (maxLength 8 IsTooLong value)
+                |> V.andThen (notInList BlacklistedUsername [ "root", "wheel" ])
 
         validEmail value =
             notBlank IsBlank value
-                *> isEmail InvalidEmail value
+                |> V.also (isEmail InvalidEmail value)
 
         validPassword value =
             notBlank IsBlank value
-                *> minLength 8 IsTooShort value
-                *> maxLength 32 IsTooLong value
+                |> V.also (minLength 8 IsTooShort value)
+                |> V.also (maxLength 32 IsTooLong value)
 
         validRole value =
             notBlank IsBlank value
-                *> inList InvalidRole [ "user", "admin" ] value
+                |> V.also (inList InvalidRole [ "user", "admin" ] value)
 
         validNotes value =
             maxLength 140 IsTooLong value
 
         validForm =
-            FormValues
-                <$> validUsername m.formValues.username
-                <*> validEmail m.formValues.email
-                <*> validPassword m.formValues.password
-                <*> validRole m.formValues.role
-                <*> validNotes m.formValues.notes
+            V.map FormValues
+                (validUsername m.formValues.username)
+                |> V.also (validEmail m.formValues.email)
+                |> V.also (validPassword m.formValues.password)
+                |> V.also (validRole m.formValues.role)
+                |> V.also (validNotes m.formValues.notes)
 
         errors =
-            Validation.transform Cons.toList (always [])
+            V.transform Cons.toList (always [])
     in
     case msg of
         Submit ->
-            m
+            case V.transform Err Ok validForm of
+                Err _ ->
+                    m
+
+                Ok _ ->
+                    initialModel
 
         InputName value ->
             { m

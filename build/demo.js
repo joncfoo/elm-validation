@@ -8824,8 +8824,6 @@ var _joncfoo$applicative_validation$Validation$map = F2(
 				fn(_p1._0));
 		}
 	});
-var _joncfoo$applicative_validation$Validation_ops = _joncfoo$applicative_validation$Validation_ops || {};
-_joncfoo$applicative_validation$Validation_ops['<$>'] = _joncfoo$applicative_validation$Validation$map;
 var _joncfoo$applicative_validation$Validation$bimap = F3(
 	function (fnE, fnA, v) {
 		var _p2 = v;
@@ -8838,7 +8836,7 @@ var _joncfoo$applicative_validation$Validation$bimap = F3(
 		}
 	});
 var _joncfoo$applicative_validation$Validation$apply = F2(
-	function (vFn, v) {
+	function (v, vFn) {
 		var _p3 = vFn;
 		if (_p3.ctor === 'Invalid') {
 			var _p5 = _p3._0;
@@ -8853,31 +8851,15 @@ var _joncfoo$applicative_validation$Validation$apply = F2(
 			return A2(_joncfoo$applicative_validation$Validation$map, _p3._0, v);
 		}
 	});
-var _joncfoo$applicative_validation$Validation_ops = _joncfoo$applicative_validation$Validation_ops || {};
-_joncfoo$applicative_validation$Validation_ops['<*>'] = _joncfoo$applicative_validation$Validation$apply;
-var _joncfoo$applicative_validation$Validation$applyFirst = F2(
-	function (v1, v2) {
+var _joncfoo$applicative_validation$Validation$also = F2(
+	function (v2, v1) {
 		return A2(
-			_joncfoo$applicative_validation$Validation_ops['<*>'],
-			A2(_joncfoo$applicative_validation$Validation$map, _elm_lang$core$Basics$always, v1),
-			v2);
+			_joncfoo$applicative_validation$Validation$apply,
+			v2,
+			A2(_joncfoo$applicative_validation$Validation$map, _elm_lang$core$Basics$always, v1));
 	});
-var _joncfoo$applicative_validation$Validation_ops = _joncfoo$applicative_validation$Validation_ops || {};
-_joncfoo$applicative_validation$Validation_ops['<*'] = _joncfoo$applicative_validation$Validation$applyFirst;
-var _joncfoo$applicative_validation$Validation$applySecond = F2(
-	function (v1, v2) {
-		return A2(
-			_joncfoo$applicative_validation$Validation_ops['<*>'],
-			A2(
-				_joncfoo$applicative_validation$Validation$map,
-				_elm_lang$core$Basics$always(_elm_lang$core$Basics$identity),
-				v1),
-			v2);
-	});
-var _joncfoo$applicative_validation$Validation_ops = _joncfoo$applicative_validation$Validation_ops || {};
-_joncfoo$applicative_validation$Validation_ops['*>'] = _joncfoo$applicative_validation$Validation$applySecond;
 var _joncfoo$applicative_validation$Validation$andThen = F2(
-	function (v, fn) {
+	function (fn, v) {
 		var _p6 = v;
 		if (_p6.ctor === 'Invalid') {
 			return _joncfoo$applicative_validation$Validation$Invalid(_p6._0);
@@ -8885,8 +8867,6 @@ var _joncfoo$applicative_validation$Validation$andThen = F2(
 			return fn(_p6._0);
 		}
 	});
-var _joncfoo$applicative_validation$Validation_ops = _joncfoo$applicative_validation$Validation_ops || {};
-_joncfoo$applicative_validation$Validation_ops['>>='] = _joncfoo$applicative_validation$Validation$andThen;
 
 var _joncfoo$applicative_validation$Validation_Validator$inList = F3(
 	function (err, list, value) {
@@ -8930,7 +8910,7 @@ var _joncfoo$applicative_validation$Validation_Validator$notBlank = F2(
 		return _elm_lang$core$String$isEmpty(s) ? _joncfoo$applicative_validation$Validation$invalid(err) : _joncfoo$applicative_validation$Validation$valid(s);
 	});
 
-var _joncfoo$applicative_validation$Main$initialModel = {
+var _joncfoo$applicative_validation$Demo$initialModel = {
 	formValues: {username: '', email: '', password: '', role: '', notes: ''},
 	formErrors: {
 		username: {ctor: '[]'},
@@ -8940,7 +8920,7 @@ var _joncfoo$applicative_validation$Main$initialModel = {
 		notes: {ctor: '[]'}
 	}
 };
-var _joncfoo$applicative_validation$Main$showFormError = function (e) {
+var _joncfoo$applicative_validation$Demo$showFormError = function (e) {
 	var _p0 = e;
 	switch (_p0.ctor) {
 		case 'IsBlank':
@@ -8969,7 +8949,7 @@ var _joncfoo$applicative_validation$Main$showFormError = function (e) {
 			return 'Not a valid role.';
 	}
 };
-var _joncfoo$applicative_validation$Main$renderError = function (error) {
+var _joncfoo$applicative_validation$Demo$renderError = function (error) {
 	return A2(
 		_elm_lang$html$Html$li,
 		{
@@ -8980,11 +8960,11 @@ var _joncfoo$applicative_validation$Main$renderError = function (error) {
 		{
 			ctor: '::',
 			_0: _elm_lang$html$Html$text(
-				_joncfoo$applicative_validation$Main$showFormError(error)),
+				_joncfoo$applicative_validation$Demo$showFormError(error)),
 			_1: {ctor: '[]'}
 		});
 };
-var _joncfoo$applicative_validation$Main$renderField = F3(
+var _joncfoo$applicative_validation$Demo$renderField = F3(
 	function (name, errors, inputHtml) {
 		return A2(
 			_elm_lang$html$Html$div,
@@ -9035,36 +9015,36 @@ var _joncfoo$applicative_validation$Main$renderField = F3(
 							_0: _elm_lang$html$Html_Attributes$class('form_validator-errors'),
 							_1: {ctor: '[]'}
 						},
-						A2(_elm_lang$core$List$map, _joncfoo$applicative_validation$Main$renderError, errors)),
+						A2(_elm_lang$core$List$map, _joncfoo$applicative_validation$Demo$renderError, errors)),
 					_1: {ctor: '[]'}
 				}
 			});
 	});
-var _joncfoo$applicative_validation$Main$Model = F2(
+var _joncfoo$applicative_validation$Demo$Model = F2(
 	function (a, b) {
 		return {formValues: a, formErrors: b};
 	});
-var _joncfoo$applicative_validation$Main$FormValues = F5(
+var _joncfoo$applicative_validation$Demo$FormValues = F5(
 	function (a, b, c, d, e) {
 		return {username: a, email: b, password: c, role: d, notes: e};
 	});
-var _joncfoo$applicative_validation$Main$InputNotes = function (a) {
+var _joncfoo$applicative_validation$Demo$InputNotes = function (a) {
 	return {ctor: 'InputNotes', _0: a};
 };
-var _joncfoo$applicative_validation$Main$InputRole = function (a) {
+var _joncfoo$applicative_validation$Demo$InputRole = function (a) {
 	return {ctor: 'InputRole', _0: a};
 };
-var _joncfoo$applicative_validation$Main$InputPassword = function (a) {
+var _joncfoo$applicative_validation$Demo$InputPassword = function (a) {
 	return {ctor: 'InputPassword', _0: a};
 };
-var _joncfoo$applicative_validation$Main$InputEmail = function (a) {
+var _joncfoo$applicative_validation$Demo$InputEmail = function (a) {
 	return {ctor: 'InputEmail', _0: a};
 };
-var _joncfoo$applicative_validation$Main$InputName = function (a) {
+var _joncfoo$applicative_validation$Demo$InputName = function (a) {
 	return {ctor: 'InputName', _0: a};
 };
-var _joncfoo$applicative_validation$Main$Submit = {ctor: 'Submit'};
-var _joncfoo$applicative_validation$Main$view = function (m) {
+var _joncfoo$applicative_validation$Demo$Submit = {ctor: 'Submit'};
+var _joncfoo$applicative_validation$Demo$view = function (m) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -9095,14 +9075,14 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 						_0: _elm_lang$html$Html_Attributes$class('form'),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onSubmit(_joncfoo$applicative_validation$Main$Submit),
+							_0: _elm_lang$html$Html_Events$onSubmit(_joncfoo$applicative_validation$Demo$Submit),
 							_1: {ctor: '[]'}
 						}
 					},
 					{
 						ctor: '::',
 						_0: A3(
-							_joncfoo$applicative_validation$Main$renderField,
+							_joncfoo$applicative_validation$Demo$renderField,
 							'Username',
 							m.formErrors.username,
 							A2(
@@ -9115,7 +9095,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 										_0: _elm_lang$html$Html_Attributes$type_('text'),
 										_1: {
 											ctor: '::',
-											_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Main$InputName),
+											_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Demo$InputName),
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$html$Html_Attributes$value(m.formValues.username),
@@ -9128,7 +9108,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 						_1: {
 							ctor: '::',
 							_0: A3(
-								_joncfoo$applicative_validation$Main$renderField,
+								_joncfoo$applicative_validation$Demo$renderField,
 								'Email',
 								m.formErrors.email,
 								A2(
@@ -9141,7 +9121,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 											_0: _elm_lang$html$Html_Attributes$type_('email'),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Main$InputEmail),
+												_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Demo$InputEmail),
 												_1: {
 													ctor: '::',
 													_0: _elm_lang$html$Html_Attributes$value(m.formValues.email),
@@ -9154,7 +9134,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 							_1: {
 								ctor: '::',
 								_0: A3(
-									_joncfoo$applicative_validation$Main$renderField,
+									_joncfoo$applicative_validation$Demo$renderField,
 									'Password',
 									m.formErrors.password,
 									A2(
@@ -9167,7 +9147,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 												_0: _elm_lang$html$Html_Attributes$type_('password'),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Main$InputPassword),
+													_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Demo$InputPassword),
 													_1: {
 														ctor: '::',
 														_0: _elm_lang$html$Html_Attributes$value(m.formValues.password),
@@ -9180,7 +9160,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 								_1: {
 									ctor: '::',
 									_0: A3(
-										_joncfoo$applicative_validation$Main$renderField,
+										_joncfoo$applicative_validation$Demo$renderField,
 										'Role',
 										m.formErrors.role,
 										A2(
@@ -9190,7 +9170,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 												_0: _elm_lang$html$Html_Attributes$class('input'),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Main$InputRole),
+													_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Demo$InputRole),
 													_1: {ctor: '[]'}
 												}
 											},
@@ -9235,7 +9215,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 									_1: {
 										ctor: '::',
 										_0: A3(
-											_joncfoo$applicative_validation$Main$renderField,
+											_joncfoo$applicative_validation$Demo$renderField,
 											'Notes',
 											m.formErrors.notes,
 											A2(
@@ -9245,7 +9225,7 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 													_0: _elm_lang$html$Html_Attributes$class('input'),
 													_1: {
 														ctor: '::',
-														_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Main$InputNotes),
+														_0: _elm_lang$html$Html_Events$onInput(_joncfoo$applicative_validation$Demo$InputNotes),
 														_1: {ctor: '[]'}
 													}
 												},
@@ -9279,17 +9259,17 @@ var _joncfoo$applicative_validation$Main$view = function (m) {
 			}
 		});
 };
-var _joncfoo$applicative_validation$Main$InvalidRole = {ctor: 'InvalidRole'};
-var _joncfoo$applicative_validation$Main$InvalidEmail = {ctor: 'InvalidEmail'};
-var _joncfoo$applicative_validation$Main$BlacklistedUsername = {ctor: 'BlacklistedUsername'};
-var _joncfoo$applicative_validation$Main$IsTooLong = function (a) {
+var _joncfoo$applicative_validation$Demo$InvalidRole = {ctor: 'InvalidRole'};
+var _joncfoo$applicative_validation$Demo$InvalidEmail = {ctor: 'InvalidEmail'};
+var _joncfoo$applicative_validation$Demo$BlacklistedUsername = {ctor: 'BlacklistedUsername'};
+var _joncfoo$applicative_validation$Demo$IsTooLong = function (a) {
 	return {ctor: 'IsTooLong', _0: a};
 };
-var _joncfoo$applicative_validation$Main$IsTooShort = function (a) {
+var _joncfoo$applicative_validation$Demo$IsTooShort = function (a) {
 	return {ctor: 'IsTooShort', _0: a};
 };
-var _joncfoo$applicative_validation$Main$IsBlank = {ctor: 'IsBlank'};
-var _joncfoo$applicative_validation$Main$update = F2(
+var _joncfoo$applicative_validation$Demo$IsBlank = {ctor: 'IsBlank'};
+var _joncfoo$applicative_validation$Demo$update = F2(
 	function (msg, m) {
 		var errors = A2(
 			_joncfoo$applicative_validation$Validation$transform,
@@ -9297,15 +9277,14 @@ var _joncfoo$applicative_validation$Main$update = F2(
 			_elm_lang$core$Basics$always(
 				{ctor: '[]'}));
 		var validNotes = function (value) {
-			return A3(_joncfoo$applicative_validation$Validation_Validator$maxLength, 140, _joncfoo$applicative_validation$Main$IsTooLong, value);
+			return A3(_joncfoo$applicative_validation$Validation_Validator$maxLength, 140, _joncfoo$applicative_validation$Demo$IsTooLong, value);
 		};
 		var validRole = function (value) {
 			return A2(
-				_joncfoo$applicative_validation$Validation_ops['*>'],
-				A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Main$IsBlank, value),
+				_joncfoo$applicative_validation$Validation$also,
 				A3(
 					_joncfoo$applicative_validation$Validation_Validator$inList,
-					_joncfoo$applicative_validation$Main$InvalidRole,
+					_joncfoo$applicative_validation$Demo$InvalidRole,
 					{
 						ctor: '::',
 						_0: 'user',
@@ -9315,36 +9294,30 @@ var _joncfoo$applicative_validation$Main$update = F2(
 							_1: {ctor: '[]'}
 						}
 					},
-					value));
+					value),
+				A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Demo$IsBlank, value));
 		};
 		var validPassword = function (value) {
 			return A2(
-				_joncfoo$applicative_validation$Validation_ops['*>'],
+				_joncfoo$applicative_validation$Validation$also,
+				A3(_joncfoo$applicative_validation$Validation_Validator$maxLength, 32, _joncfoo$applicative_validation$Demo$IsTooLong, value),
 				A2(
-					_joncfoo$applicative_validation$Validation_ops['*>'],
-					A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Main$IsBlank, value),
-					A3(_joncfoo$applicative_validation$Validation_Validator$minLength, 8, _joncfoo$applicative_validation$Main$IsTooShort, value)),
-				A3(_joncfoo$applicative_validation$Validation_Validator$maxLength, 32, _joncfoo$applicative_validation$Main$IsTooLong, value));
+					_joncfoo$applicative_validation$Validation$also,
+					A3(_joncfoo$applicative_validation$Validation_Validator$minLength, 8, _joncfoo$applicative_validation$Demo$IsTooShort, value),
+					A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Demo$IsBlank, value)));
 		};
 		var validEmail = function (value) {
 			return A2(
-				_joncfoo$applicative_validation$Validation_ops['*>'],
-				A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Main$IsBlank, value),
-				A2(_joncfoo$applicative_validation$Validation_Validator$isEmail, _joncfoo$applicative_validation$Main$InvalidEmail, value));
+				_joncfoo$applicative_validation$Validation$also,
+				A2(_joncfoo$applicative_validation$Validation_Validator$isEmail, _joncfoo$applicative_validation$Demo$InvalidEmail, value),
+				A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Demo$IsBlank, value));
 		};
 		var validUsername = function (value) {
 			return A2(
-				_joncfoo$applicative_validation$Validation_ops['*>'],
+				_joncfoo$applicative_validation$Validation$andThen,
 				A2(
-					_joncfoo$applicative_validation$Validation_ops['*>'],
-					A2(
-						_joncfoo$applicative_validation$Validation_ops['*>'],
-						A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Main$IsBlank, value),
-						A3(_joncfoo$applicative_validation$Validation_Validator$minLength, 3, _joncfoo$applicative_validation$Main$IsTooShort, value)),
-					A3(_joncfoo$applicative_validation$Validation_Validator$maxLength, 8, _joncfoo$applicative_validation$Main$IsTooLong, value)),
-				A3(
 					_joncfoo$applicative_validation$Validation_Validator$notInList,
-					_joncfoo$applicative_validation$Main$BlacklistedUsername,
+					_joncfoo$applicative_validation$Demo$BlacklistedUsername,
 					{
 						ctor: '::',
 						_0: 'root',
@@ -9353,115 +9326,126 @@ var _joncfoo$applicative_validation$Main$update = F2(
 							_0: 'wheel',
 							_1: {ctor: '[]'}
 						}
-					},
-					value));
+					}),
+				A2(
+					_joncfoo$applicative_validation$Validation$also,
+					A3(_joncfoo$applicative_validation$Validation_Validator$maxLength, 8, _joncfoo$applicative_validation$Demo$IsTooLong, value),
+					A2(
+						_joncfoo$applicative_validation$Validation$also,
+						A3(_joncfoo$applicative_validation$Validation_Validator$minLength, 3, _joncfoo$applicative_validation$Demo$IsTooShort, value),
+						A2(_joncfoo$applicative_validation$Validation_Validator$notBlank, _joncfoo$applicative_validation$Demo$IsBlank, value))));
 		};
 		var validForm = A2(
-			_joncfoo$applicative_validation$Validation_ops['<*>'],
+			_joncfoo$applicative_validation$Validation$also,
+			validNotes(m.formValues.notes),
 			A2(
-				_joncfoo$applicative_validation$Validation_ops['<*>'],
+				_joncfoo$applicative_validation$Validation$also,
+				validRole(m.formValues.role),
 				A2(
-					_joncfoo$applicative_validation$Validation_ops['<*>'],
+					_joncfoo$applicative_validation$Validation$also,
+					validPassword(m.formValues.password),
 					A2(
-						_joncfoo$applicative_validation$Validation_ops['<*>'],
+						_joncfoo$applicative_validation$Validation$also,
+						validEmail(m.formValues.email),
 						A2(
-							_joncfoo$applicative_validation$Validation_ops['<$>'],
-							_joncfoo$applicative_validation$Main$FormValues,
-							validUsername(m.formValues.username)),
-						validEmail(m.formValues.email)),
-					validPassword(m.formValues.password)),
-				validRole(m.formValues.role)),
-			validNotes(m.formValues.notes));
+							_joncfoo$applicative_validation$Validation$map,
+							_joncfoo$applicative_validation$Demo$FormValues,
+							validUsername(m.formValues.username))))));
 		var formValues = m.formValues;
 		var formErrors = m.formErrors;
 		var _p1 = msg;
 		switch (_p1.ctor) {
 			case 'Submit':
-				return m;
+				var _p2 = A3(_joncfoo$applicative_validation$Validation$transform, _elm_lang$core$Result$Err, _elm_lang$core$Result$Ok, validForm);
+				if (_p2.ctor === 'Err') {
+					return m;
+				} else {
+					return _joncfoo$applicative_validation$Demo$initialModel;
+				}
 			case 'InputName':
-				var _p2 = _p1._0;
-				return _elm_lang$core$Native_Utils.update(
-					m,
-					{
-						formValues: _elm_lang$core$Native_Utils.update(
-							formValues,
-							{username: _p2}),
-						formErrors: _elm_lang$core$Native_Utils.update(
-							formErrors,
-							{
-								username: errors(
-									validUsername(_p2))
-							})
-					});
-			case 'InputEmail':
 				var _p3 = _p1._0;
 				return _elm_lang$core$Native_Utils.update(
 					m,
 					{
 						formValues: _elm_lang$core$Native_Utils.update(
 							formValues,
-							{email: _p3}),
+							{username: _p3}),
 						formErrors: _elm_lang$core$Native_Utils.update(
 							formErrors,
 							{
-								email: errors(
-									validEmail(_p3))
+								username: errors(
+									validUsername(_p3))
 							})
 					});
-			case 'InputPassword':
+			case 'InputEmail':
 				var _p4 = _p1._0;
 				return _elm_lang$core$Native_Utils.update(
 					m,
 					{
 						formValues: _elm_lang$core$Native_Utils.update(
 							formValues,
-							{password: _p4}),
+							{email: _p4}),
 						formErrors: _elm_lang$core$Native_Utils.update(
 							formErrors,
 							{
-								password: errors(
-									validPassword(_p4))
+								email: errors(
+									validEmail(_p4))
 							})
 					});
-			case 'InputRole':
+			case 'InputPassword':
 				var _p5 = _p1._0;
 				return _elm_lang$core$Native_Utils.update(
 					m,
 					{
 						formValues: _elm_lang$core$Native_Utils.update(
 							formValues,
-							{role: _p5}),
+							{password: _p5}),
 						formErrors: _elm_lang$core$Native_Utils.update(
 							formErrors,
 							{
-								role: errors(
-									validRole(_p5))
+								password: errors(
+									validPassword(_p5))
 							})
 					});
-			default:
+			case 'InputRole':
 				var _p6 = _p1._0;
 				return _elm_lang$core$Native_Utils.update(
 					m,
 					{
 						formValues: _elm_lang$core$Native_Utils.update(
 							formValues,
-							{notes: _p6}),
+							{role: _p6}),
+						formErrors: _elm_lang$core$Native_Utils.update(
+							formErrors,
+							{
+								role: errors(
+									validRole(_p6))
+							})
+					});
+			default:
+				var _p7 = _p1._0;
+				return _elm_lang$core$Native_Utils.update(
+					m,
+					{
+						formValues: _elm_lang$core$Native_Utils.update(
+							formValues,
+							{notes: _p7}),
 						formErrors: _elm_lang$core$Native_Utils.update(
 							formErrors,
 							{
 								notes: errors(
-									validNotes(_p6))
+									validNotes(_p7))
 							})
 					});
 		}
 	});
-var _joncfoo$applicative_validation$Main$main = _elm_lang$html$Html$beginnerProgram(
-	{model: _joncfoo$applicative_validation$Main$initialModel, update: _joncfoo$applicative_validation$Main$update, view: _joncfoo$applicative_validation$Main$view})();
+var _joncfoo$applicative_validation$Demo$main = _elm_lang$html$Html$beginnerProgram(
+	{model: _joncfoo$applicative_validation$Demo$initialModel, update: _joncfoo$applicative_validation$Demo$update, view: _joncfoo$applicative_validation$Demo$view})();
 
 var Elm = {};
-Elm['Main'] = Elm['Main'] || {};
-if (typeof _joncfoo$applicative_validation$Main$main !== 'undefined') {
-    _joncfoo$applicative_validation$Main$main(Elm['Main'], 'Main', undefined);
+Elm['Demo'] = Elm['Demo'] || {};
+if (typeof _joncfoo$applicative_validation$Demo$main !== 'undefined') {
+    _joncfoo$applicative_validation$Demo$main(Elm['Demo'], 'Demo', undefined);
 }
 
 if (typeof define === "function" && define['amd'])

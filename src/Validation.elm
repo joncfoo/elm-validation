@@ -1,15 +1,9 @@
 module Validation
     exposing
-        ( (*>)
-        , (<$>)
-        , (<*)
-        , (<*>)
-        , (>>=)
-        , Validation
+        ( Validation
+        , also
         , andThen
         , apply
-        , applyFirst
-        , applySecond
         , bimap
         , invalid
         , map
@@ -29,17 +23,17 @@ module Validation
 
 # Modifying a validation
 
-@docs transform, map, (<$>), bimap
+@docs transform, map, bimap
 
 
 # Applying successive validations
 
-@docs apply, (<*>), applyFirst, (*>), applySecond, (<*)
+@docs apply, also
 
 
 # Chaining validations
 
-@docs andThen, (>>=)
+@docs andThen
 
 -}
 
@@ -137,21 +131,6 @@ map fn v =
             Valid (fn a)
 
 
-{-| Infix operator for `map`
-
-    type Email
-        = Email String
-
-    toEmail : Validation e String -> Validation e Email
-    toEmail v =
-        Email <$> v
-
--}
-(<$>) : (a -> b) -> Validation e a -> Validation e b
-(<$>) =
-    map
-
-
 {-| Run functions over the failure or success part of the validation.
 -}
 bimap : (e -> f) -> (a -> b) -> Validation e a -> Validation f b
@@ -182,13 +161,13 @@ This can be used like so:
     validUser : Validation Error User
     validUser =
         User
-            <*> validUsername
-            <*> validEmail
-            <*> validPassword
+            |> apply (validUsername formValues.username
+            |> apply (validEmail formValues.email
+            |> apply (validPassword formValues.password)
 
 -}
-apply : Validation e (a -> b) -> Validation e a -> Validation e b
-apply vFn v =
+apply : Validation e a -> Validation e (a -> b) -> Validation e b
+apply v vFn =
     case vFn of
         Invalid e1 ->
             case v of
@@ -202,57 +181,21 @@ apply vFn v =
             map fn v
 
 
-{-| Infix operator for `apply`
--}
-(<*>) : Validation e (a -> b) -> Validation e a -> Validation e b
-(<*>) =
-    apply
-
-
 {-| Combines two validations but keeps the success part of the first one.
 The effect of this is that the errors will be accumulated.
 -}
-applyFirst : Validation e a -> Validation e b -> Validation e a
-applyFirst v1 v2 =
-    map always v1 <*> v2
-
-
-{-| Infix operator for `applyFirst`
--}
-(<*) : Validation e a -> Validation e b -> Validation e a
-(<*) =
-    applyFirst
-
-
-{-| Combines two validations but keeps the success part of the second one.
-The effect of this is that the errors will be accumulated.
--}
-applySecond : Validation e a -> Validation e b -> Validation e b
-applySecond v1 v2 =
-    map (always identity) v1 <*> v2
-
-
-{-| Infix operator for `applySecond`
--}
-(*>) : Validation e a -> Validation e a -> Validation e a
-(*>) =
-    applySecond
+also : Validation e b -> Validation e a -> Validation e a
+also v2 v1 =
+    apply v2 (map always v1)
 
 
 {-| Chain a validation.
 -}
-andThen : Validation e a -> (a -> Validation e b) -> Validation e b
-andThen v fn =
+andThen : (a -> Validation e b) -> Validation e a -> Validation e b
+andThen fn v =
     case v of
         Invalid e ->
             Invalid e
 
         Valid a ->
             fn a
-
-
-{-| Infix operator for `andThen`
--}
-(>>=) : Validation e a -> (a -> Validation e b) -> Validation e b
-(>>=) =
-    andThen
